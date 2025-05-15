@@ -1,0 +1,80 @@
+{
+  "name": "live-code-complexity",
+  "displayName": "🚀 Live Code Complexity Visualizer",
+  "description": "Real-time visual feedback on code complexity metrics",
+  "version": "0.1.0",
+  "publisher": "your-name",
+  "engines": {
+    "vscode": "^1.75.0"
+  },
+  "categories": [
+    "Linters",
+    "Code Analysis",
+    "Visualization"
+  ],
+  "activationEvents": [
+    "onLanguage:javascript",
+    "onLanguage:typescript",
+    "onLanguage:python",
+    "onLanguage:java"
+  ],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "complexity.showReport",
+        "title": "Show Complexity Report"
+      }
+    ],
+    "configuration": {
+      "title": "Code Complexity",
+      "properties": {
+        "codeComplexity.cyclomaticThreshold": {
+          "type": "number",
+          "default": 10,
+          "description": "Cyclomatic complexity threshold for warnings"
+        },
+        "codeComplexity.halsteadEffortThreshold": {
+          "type": "number",
+          "default": 300,
+          "description": "Halstead effort threshold for warnings"
+        },
+        "codeComplexity.showInline": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show inline complexity indicators"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "lint": "eslint src --ext ts",
+    "pretest": "npm run compile && npm run lint",
+    "test": "node ./out/test/runTest.js",
+    "vscode:prepublish": "npm run compile",
+    "package": "vsce package"
+  },
+  "dependencies": {
+    "typhonjs-escomplex": "^0.0.12",
+    "radon-js": "^1.0.0",
+    "vscode-languageclient": "^8.1.0"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.75.0",
+    "@types/node": "16.x",
+    "eslint": "^8.34.0",
+    "typescript": "^4.9.5",
+    "@types/mocha": "^10.0.1",
+    "@types/node": "16.x"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/live-code-complexity.git"
+  },
+  "license": "MIT",  
+  "keywords": ["complexity", "analysis", "metrics"], 
+  "icon": "images/logo.png"  
+
+}
