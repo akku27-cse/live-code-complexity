@@ -5,8 +5,12 @@
         "strict": true, // Enable all strict type-checking options
         "esModuleInterop": true, // Enable interoperability between CommonJS and ES Modules
         "skipLibCheck": true, // Skip type checking of declaration files
-        "forceConsistentCasingInFileNames": true // Ensure consistent casing in file names
+        "forceConsistentCasingInFileNames": true, // Ensure consistent casing in file names
+        "outDir": "dist"
     },
+     "typeRoots": [
+      "./node_modules/@types",
+      "./src/types/custom"],
     "include": ["src"], // Specify the files or directories to include
     "exclude": ["node_modules", "dist"] // Specify the files or directories to exclude
 }

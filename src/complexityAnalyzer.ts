@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
-import { ModuleReport } from 'typhonjs-escomplex';
+import escomplex from 'typhonjs-escomplex';
+
 import * as radon from 'radon-js';
 import { ComplexityReport, FunctionComplexity } from './types';
 
@@ -46,9 +47,10 @@ export class ComplexityAnalyzer {
     }
 
     private analyzeJavaScript(code: string): ComplexityReport {
-        const report: ModuleReport = require('typhonjs-escomplex').analyzeModule(code);
+       const report = escomplex.analyzeModule(code);
+
         
-        const functions: FunctionComplexity[] = report.methods.map(method => ({
+        const functions: FunctionComplexity[] = report.methods.map(method=> ({
             name: method.name,
             line: method.lineStart,
             cyclomatic: method.cyclomatic,
