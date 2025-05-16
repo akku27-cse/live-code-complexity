@@ -1,12 +1,12 @@
+
 export interface FunctionComplexity {
     name: string;
     line: number;
     cyclomatic: number;
-    halsteadDifficulty: number;
-    halsteadEffort: number;
-    linesOfCode: number;
+    halsteadEffort?: number;
+    halsteadDifficulty?: number;
+    linesOfCode?: number;
 }
-
 export interface ComplexityReport {
     functions: FunctionComplexity[];
     averageCyclomatic: number;

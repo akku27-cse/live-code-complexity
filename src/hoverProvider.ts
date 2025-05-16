@@ -14,36 +14,49 @@ export class ComplexityHoverProvider implements vscode.HoverProvider {
         position: vscode.Position,
         token: vscode.CancellationToken
     ): vscode.ProviderResult<vscode.Hover> {
-        const func = this.analyzer.getFunctionAtPosition(document, position);
+       const func = this.analyzer.getFunctionAtPosition(document, position) as FunctionComplexity | undefined;
+
         if (!func) {
             return null;
         }
+
+        // Provide defaults for optional properties
+        const safeFunc: Required<FunctionComplexity> = {
+            halsteadEffort: 0,
+            halsteadDifficulty: 0,
+            linesOfCode: 0,
+            ...func
+        };
 
         const config = vscode.workspace.getConfiguration('codeComplexity');
         const cyclomaticThreshold = config.get<number>('cyclomaticThreshold', 10);
         const halsteadThreshold = config.get<number>('halsteadEffortThreshold', 300);
 
-        const severity = this.getSeverity(func, cyclomaticThreshold, halsteadThreshold);
+        const severity = this.getSeverity(safeFunc, cyclomaticThreshold, halsteadThreshold);
         const severityMark = this.getSeverityMark(severity);
 
         const markdown = new vscode.MarkdownString();
-        markdown.appendMarkdown(`### ${func.name} ${severityMark}\n\n`);
+        markdown.appendMarkdown(`### ${safeFunc.name} ${severityMark}\n\n`);
         markdown.appendMarkdown(`**Complexity Metrics:**\n`);
-        markdown.appendMarkdown(`- Cyclomatic: ${func.cyclomatic}\n`);
-        markdown.appendMarkdown(`- Halstead Effort: ${func.halsteadEffort.toFixed(2)}\n`);
-        markdown.appendMarkdown(`- Lines of Code: ${func.linesOfCode}\n\n`);
+        markdown.appendMarkdown(`- Cyclomatic: ${safeFunc.cyclomatic}\n`);
+        markdown.appendMarkdown(`- Halstead Effort: ${safeFunc.halsteadEffort.toFixed(2)}\n`);
+        markdown.appendMarkdown(`- Lines of Code: ${safeFunc.linesOfCode}\n\n`);
 
         if (severity === 'high') {
             markdown.appendMarkdown(`⚠️ **Warning:** This function is too complex\n\n`);
         }
 
-        markdown.appendMarkdown(this.getRefactoringSuggestions(func));
+        markdown.appendMarkdown(this.getRefactoringSuggestions(safeFunc));
         markdown.isTrusted = true;
 
         return new vscode.Hover(markdown);
     }
 
-    private getSeverity(func: FunctionComplexity, cyclomaticThreshold: number, halsteadThreshold: number): string {
+    private getSeverity(
+        func: { cyclomatic: number; halsteadEffort: number },
+        cyclomaticThreshold: number,
+        halsteadThreshold: number
+    ): 'low' | 'medium' | 'high' {
         if (func.cyclomatic > cyclomaticThreshold || func.halsteadEffort > halsteadThreshold) {
             return 'high';
         }
@@ -53,7 +66,7 @@ export class ComplexityHoverProvider implements vscode.HoverProvider {
         return 'low';
     }
 
-    private getSeverityMark(severity: string): string {
+    private getSeverityMark(severity: 'low' | 'medium' | 'high'): string {
         switch (severity) {
             case 'high': return '🔴';
             case 'medium': return '🟡';
@@ -61,8 +74,10 @@ export class ComplexityHoverProvider implements vscode.HoverProvider {
         }
     }
 
-    private getRefactoringSuggestions(func: FunctionComplexity): string {
-        const suggestions = [];
+    private getRefactoringSuggestions(
+        func: { cyclomatic: number; halsteadEffort: number; linesOfCode: number }
+    ): string {
+        const suggestions: string[] = [];
         
         if (func.cyclomatic > 10) {
             suggestions.push("- Break into smaller functions");

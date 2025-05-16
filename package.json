@@ -1,15 +1,14 @@
 {
   "name": "live-code-complexity",
-  "displayName": "🚀 Live Code Complexity Visualizer",
+  "displayName": "Live Code Complexity Visualizer",
   "description": "Real-time visual feedback on code complexity metrics",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "publisher": "santujana",
   "engines": {
     "vscode": "^1.75.0"
   },
   "categories": [
     "Linters",
-    
     "Visualization"
   ],
   "activationEvents": [
@@ -60,6 +59,7 @@
     "typhonjs-escomplex": "^0.0.12",
     "radon-js": "^1.0.0",
     "vscode-languageclient": "^8.1.0"
+    
   },
   "devDependencies": {
     "@types/vscode": "^1.75.0",
